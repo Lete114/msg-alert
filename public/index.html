@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="msg-alert.js"></script>
+  </head>
+  <body>
+    <div class="test"></div>
+    <script>
+      var i = 0
+    </script>
+
+    <button onclick="message.info('这是一个段落'+i++)">message</button>
+    <button onclick="message.success('success'+i++)">success</button>
+    <button onclick="message.error('error'+i++)">error</button>
+    <button onclick="message.warn('warn'+i++)">warn</button>
+    <button onclick="message.info({text:'close '+i++,showClose:true})">close</button>
+    <button onclick="message.info({text:'close '+i++,duration:0})">never close</button>
+    <button
+      onclick="message.info(
+      {text:'<strong>This is <i>HTML</i> string</strong> - '+i++,html:true})"
+    >
+      HTML
+    </button>
+  </body>
+</html>

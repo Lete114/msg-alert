@@ -4,7 +4,7 @@
  * @returns {Boolean}
  */
 function isElement(el) {
-  return el in Element
+  return el instanceof Element
 }
 
 /**

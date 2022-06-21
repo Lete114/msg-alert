@@ -59,6 +59,11 @@ function createCloseSVG() {
   return closeSVG
 }
 
+/**
+ * Set the spacing of the message
+ * @param {Number} offset Message Offset from the top of the window
+ * @param {Element} el Elements that need to be spaced
+ */
 function setTop(offset, el) {
   const prev = el.previousElementSibling
   if (prev.classList.contains('_msg')) {

@@ -21,6 +21,14 @@ for (const i in typeMap) {
   }
 }
 
+/**
+ * Destroy message
+ * @param {Element} el Messages that need to be destroyed
+ * @param {Number} duration duration
+ * @param {Number} offset Message Offset from the top of the window
+ * @param {Function} onClose Before close callback function
+ * @returns {Number} setTimeout ID
+ */
 function destroy(el, duration, offset, onClose) {
   // 延迟删除
   return setTimeout(() => {

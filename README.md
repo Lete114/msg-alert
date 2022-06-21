@@ -80,6 +80,14 @@ Message 显示类型
 
 Message 显示内容
 
+### zIndex
+
+类型: `Number`
+
+默认值: `1`
+
+Message 的显示层级
+
 ### offset
 
 类型: `Number`

@@ -59,7 +59,7 @@ export default function msg(options) {
   if (isString(options)) options = { text: options }
 
   let isClose
-  const { text, type, offset, duration, customClass, html, showClose, onClose, appendTo } = Object.assign(
+  const { text, type, zIndex, offset, duration, customClass, html, showClose, onClose, appendTo } = Object.assign(
     {
       type: typeMap[0],
       text: '',
@@ -70,6 +70,7 @@ export default function msg(options) {
   )
 
   const el = createElement('div', `_msg _msg-${type} ${OPACITY} ${customClass || ''}`)
+  el.style.zIndex = zIndex || 1
   el.id = unique()
   instances.push(el)
 

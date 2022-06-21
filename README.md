@@ -58,6 +58,12 @@ const message = require('msg-alert')
 
 ## 选项 API
 
+### message.destroyAll
+
+类型: `Function`
+
+销毁所有的 Message
+
 ### type
 
 类型: `String`
@@ -113,6 +119,14 @@ Message 显示的持续时间,设置为 0 表示永不关闭 **(单位毫秒)**
 默认值: `false`
 
 是否显示关闭按钮
+
+### onClose
+
+类型: `Function`
+
+默认值: `-`
+
+Message 关闭前的回调函数
 
 ### appendTo
 

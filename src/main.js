@@ -21,12 +21,13 @@ for (const i in typeMap) {
   }
 }
 
-function destroy(el, duration, offset) {
+function destroy(el, duration, offset, onClose) {
   // 延迟删除
   return setTimeout(() => {
     // 淡出
     el.style.top = 0
     el.classList.add(OPACITY)
+    if (typeof onClose === 'function') onClose()
     // 等待淡出动画结束后删除
     setTimeout(() => {
       el.parentElement.removeChild(el)
@@ -74,7 +75,7 @@ export default function msg(options) {
   if (duration) {
     // 鼠标悬停取消销毁
     // el.t === el.timer
-    el.t = destroy(el, duration, offset)
+    el.t = destroy(el, duration, offset, onClose)
     el.onmouseenter = function () {
       if (isClose) return
       clearTimeout(el.t)
@@ -83,7 +84,7 @@ export default function msg(options) {
     // 鼠标离开后，超过指定时间后销毁
     el.onmouseleave = function () {
       if (isClose) return
-      el.t = destroy(el, duration, offset)
+      el.t = destroy(el, duration, offset, onClose)
     }
   }
 
@@ -99,7 +100,7 @@ export default function msg(options) {
     closeSVG.onclick = function () {
       clearTimeout(el.t)
       isClose = true
-      destroy(el, 0, offset)
+      destroy(el, 0, offset, onClose)
     }
     el.appendChild(closeSVG)
   }

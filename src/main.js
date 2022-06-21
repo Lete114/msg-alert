@@ -49,7 +49,8 @@ msg.destroyAll = function () {
 export default function msg(options) {
   if (isString(options)) options = { text: options }
 
-  const { text, type, offset, duration, customClass, html, showClose, appendTo } = Object.assign(
+  let isClose
+  const { text, type, offset, duration, customClass, html, showClose, onClose, appendTo } = Object.assign(
     {
       type: typeMap[0],
       text: '',
@@ -75,11 +76,13 @@ export default function msg(options) {
     // el.t === el.timer
     el.t = destroy(el, duration, offset)
     el.onmouseenter = function () {
+      if (isClose) return
       clearTimeout(el.t)
     }
 
     // 鼠标离开后，超过指定时间后销毁
     el.onmouseleave = function () {
+      if (isClose) return
       el.t = destroy(el, duration, offset)
     }
   }
@@ -89,10 +92,15 @@ export default function msg(options) {
   if (html) p.innerHTML = text
   else p.innerText = text
 
+  // 是否显示关闭按钮
   // 如果持续时小于等于0，则强制显示关闭按钮
   if (showClose || !duration) {
     const closeSVG = createCloseSVG()
-    closeSVG.onclick = destroy.bind(el, el, duration, offset)
+    closeSVG.onclick = function () {
+      clearTimeout(el.t)
+      isClose = true
+      destroy(el, 0, offset)
+    }
     el.appendChild(closeSVG)
   }
 

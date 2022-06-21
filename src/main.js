@@ -108,7 +108,9 @@ export default function msg(options) {
   let _appendTo
   if (isElement(appendTo)) _appendTo = appendTo
   else if (isString(appendTo)) _appendTo = document.querySelector(appendTo)
-  if (!isElement(appendTo)) _appendTo = document.body
+
+  if (!isElement(_appendTo)) _appendTo = document.body
+
   _appendTo.appendChild(el)
 
   setTop(offset, instances[instances.length - 1])

@@ -36,15 +36,16 @@ function destroy(el, duration, offset, onClose) {
     el.style.top = 0
     el.classList.add(OPACITY)
     if (typeof onClose === 'function') onClose()
+
     // 等待淡出动画结束后删除
     setTimeout(() => {
       el.parentElement.removeChild(el)
+    }, 500)
 
-      const id = instances.findIndex((_el) => _el.id === el.id)
-      instances.splice(id, 1)
-      // 删除后重新设置其它元素的top(替补删除元素的位置)
-      for (const i in instances) setTop(offset, instances[i])
-    }, 200)
+    const id = instances.findIndex((_el) => _el.id === el.id)
+    instances.splice(id, 1)
+    // 删除后重新设置其它元素的top(替补删除元素的位置)
+    for (const i in instances) setTop(offset, instances[i])
   }, duration)
 }
 

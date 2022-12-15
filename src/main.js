@@ -1,5 +1,5 @@
 import unique from 'simple-unique'
-import { isElement, isString, createElement, createCloseSVG, setTop } from './utils'
+import { isElement, isString, createElement, createCloseSVG, setPosition } from './utils'
 import styles from './main.css'
 
 const OPACITY = '_msg-opacity'
@@ -10,56 +10,12 @@ const style = createElement('style')
 style.textContent = styles
 document.head.appendChild(style)
 
-for (const i in typeMap) {
-  msg[typeMap[i]] = (options) => {
-    if (isString(options)) {
-      options = { text: options, type: typeMap[i] }
-    } else {
-      options.type = typeMap[i]
-    }
-    msg(options)
-  }
-}
+msg.zIndex = 1
 
-/**
- * Destroy message
- * @param {Element} el Messages that need to be destroyed
- * @param {Number} duration duration
- * @param {Number} offset Message Offset from the top of the window
- * @param {Function} onClose Before close callback function
- * @returns {Number} setTimeout ID
- */
-function destroy(el, duration, offset, onClose) {
-  // 延迟删除
-  return setTimeout(() => {
-    // 淡出
-    el.style.top = 0
-    el.classList.add(OPACITY)
-    if (typeof onClose === 'function') onClose()
-
-    // 等待淡出动画结束后删除
-    setTimeout(() => {
-      el.parentElement.removeChild(el)
-    }, 500)
-
-    const id = instances.findIndex((_el) => _el.id === el.id)
-    instances.splice(id, 1)
-    // 删除后重新设置其它元素的top(替补删除元素的位置)
-    for (const i in instances) setTop(offset, instances[i])
-  }, duration)
-}
-
-msg.destroyAll = function () {
-  for (const i in instances) {
-    clearTimeout(instances[i].t)
-    destroy(instances[i])
-  }
-}
 // eslint-disable-next-line max-statements
 export default function msg(options) {
   if (isString(options)) options = { text: options }
 
-  let isClose
   const { text, type, zIndex, offset, duration, customClass, html, showClose, onClose, appendTo } = Object.assign(
     {
       type: typeMap[0],
@@ -71,8 +27,10 @@ export default function msg(options) {
   )
 
   const el = createElement('div', `_msg _msg-${type} ${OPACITY} ${customClass || ''}`)
-  el.style.zIndex = zIndex || 1
   el.id = unique()
+  el._msg = {}
+  el._msg.zIndex = zIndex || msg.zIndex
+  el._msg.offset = offset
   instances.push(el)
 
   // 淡入
@@ -80,21 +38,23 @@ export default function msg(options) {
     el.classList.remove(OPACITY)
   }, 100)
 
-  // 持续时间大于等于1才会销毁，反之永不销毁
-  // (可通过点击关闭按钮 或 调用关闭所有函数来销毁)
+  // 持续时间大于0才会销毁，反之永不销毁
+  // (可通过点击关闭按钮 或 调用destroyAll函数来销毁)
   if (duration) {
+    el._msg.t = setTimeout(() => {
+      destroy(el, onClose)
+    }, duration)
+
     // 鼠标悬停取消销毁
-    // el.t === el.timer
-    el.t = destroy(el, duration, offset, onClose)
     el.onmouseenter = function () {
-      if (isClose) return
-      clearTimeout(el.t)
+      clearTimeout(el._msg.t)
     }
 
-    // 鼠标离开后，超过指定时间后销毁
+    // 鼠标离开后，开始计时销毁
     el.onmouseleave = function () {
-      if (isClose) return
-      el.t = destroy(el, duration, offset, onClose)
+      el._msg.t = setTimeout(() => {
+        destroy(el, onClose)
+      }, duration)
     }
   }
 
@@ -104,13 +64,12 @@ export default function msg(options) {
   else p.innerText = text
 
   // 是否显示关闭按钮
-  // 如果持续时小于等于0，则强制显示关闭按钮
-  if (showClose || !duration) {
+  if (showClose || !duration /* 如果持续时小于等于0，则强制显示关闭按钮 */) {
     const closeSVG = createCloseSVG()
     closeSVG.onclick = function () {
-      clearTimeout(el.t)
-      isClose = true
-      destroy(el, 0, offset, onClose)
+      clearTimeout(el._msg.t)
+      el.onmouseenter = el.onmouseleave = closeSVG.onclick = null
+      destroy(el, onClose)
     }
     el.appendChild(closeSVG)
   }
@@ -123,5 +82,48 @@ export default function msg(options) {
 
   _appendTo.appendChild(el)
 
-  setTop(offset, instances[instances.length - 1])
+  setPosition(instances)
+}
+
+for (const i in typeMap) {
+  msg[typeMap[i]] = (options) => {
+    if (isString(options)) {
+      options = { text: options, type: typeMap[i] }
+    } else {
+      options.type = typeMap[i]
+    }
+    msg(options)
+  }
+}
+
+msg.destroyAll = function () {
+  for (let i = 0; i < instances.length; i++) {
+    const el = instances[i]
+    clearTimeout(el._msg.t)
+    // 等待淡出动画结束后删除
+    el.classList.add(OPACITY)
+    setTimeout(() => {
+      el.parentElement.removeChild(el)
+    }, 400)
+  }
+  instances.length = 0
+}
+
+/**
+ * Destroy message
+ * @param {Element} el Messages that need to be destroyed
+ * @param {Function} onClose Before close callback function
+ */
+function destroy(el, onClose) {
+  const index = instances.findIndex((_el) => _el.id === el.id)
+  instances.splice(index, 1)
+  setPosition(instances, index)
+
+  if (typeof onClose === 'function') onClose()
+
+  // 等待淡出动画结束后删除
+  el.classList.add(OPACITY)
+  setTimeout(() => {
+    el.parentElement.removeChild(el)
+  }, 400)
 }

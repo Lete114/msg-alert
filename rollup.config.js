@@ -18,27 +18,25 @@ const plugins = [
   css({ minify: true })
 ]
 
+const output = [
+  {
+    name: 'message',
+    sourcemap: true,
+    format: 'iife',
+    file: jsdelivr,
+    plugins: [production && terser()]
+  }
+]
+
+if (production) {
+  output.push({ format: 'esm', file: module })
+  output.push({ exports: 'auto', format: 'cjs', file: main })
+}
+
 export default {
   input: 'src/main.js',
   plugins,
-  output: [
-    {
-      name: 'message',
-      sourcemap: true,
-      format: 'iife',
-      file: jsdelivr,
-      plugins: [production && terser()]
-    },
-    {
-      format: 'esm',
-      file: module
-    },
-    {
-      exports: 'auto',
-      format: 'cjs',
-      file: main
-    }
-  ],
+  output,
   watch: {
     clearScreen: false
   }

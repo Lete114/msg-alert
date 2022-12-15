@@ -58,6 +58,14 @@ const message = require('msg-alert')
 
 ## 选项 API
 
+### message.zIndex
+
+类型: `Number`
+
+默认值: `1`
+
+Message 的显示层级（全局）
+
 ### message.destroyAll
 
 类型: `Function`
@@ -86,7 +94,7 @@ Message 显示内容
 
 默认值: `1`
 
-Message 的显示层级
+Message 的显示层级（当前弹出）
 
 ### offset
 

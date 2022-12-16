@@ -1,6 +1,6 @@
 {
   "name": "msg-alert",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "仿 Element-ui 的 Message 组件 | Message component imitating Element-ui",
   "main": "dist/msg-alert.cjs.js",
   "module": "dist/msg-alert.esm.js",

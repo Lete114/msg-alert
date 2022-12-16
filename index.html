@@ -11,12 +11,15 @@
     <script>
       var i = 0
     </script>
+    <button onclick="message.destroyAll()">destroyAll</button>
     <button onclick="message.info('这是一个段落'+i++)">message</button>
     <button onclick="message.success('success'+i++)">success</button>
     <button onclick="message.error('error'+i++)">error</button>
     <button onclick="message.warn('warn'+i++)">warn</button>
     <button onclick="message.info({text:'close '+i++,showClose:true})">close</button>
-    <button onclick="message.info({text:'onClose event '+i++,showClose:true,onClose(){alert('this the onClose event callback function')}})">
+    <button onclick="message.info({text:'close '+i++,showClose:true,offset:50})">offset 50px</button>
+    <button onclick="message.info('这是一个段落\n这是一个段落\n这是一个段落\n这是一个段落\n这是一个段落\n这是一个段落\n这是一个段落\n'+i++)">multi line</button>
+    <button onclick="message.info({text:'onClose event '+i++,showClose:true,onClose(){alert('message 被销毁前执行的函数')}})">
       onClose event
     </button>
     <button onclick="message.info({text:'never close '+i++,duration:0})">never close</button>

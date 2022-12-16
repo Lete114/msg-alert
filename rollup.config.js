@@ -11,7 +11,7 @@ const production = !process.env.ROLLUP_WATCH
 
 const plugins = [
   !production && serve({ port: 6870, host: '127.0.0.1', contentBase: ['dist', 'public'] }),
-  !production && livereload(),
+  !production && livereload({ watch: 'dist', delay: 500 }),
   production && del({ targets: 'dist/*' }),
   nodeResolve(),
   babel({ babelHelpers: 'bundled', presets: ['@babel/preset-env'] }),
